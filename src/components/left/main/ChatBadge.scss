@@ -58,11 +58,19 @@
     height: 1.5rem;
   }
 
-  &.mention,
+  &.mention,  
   &.unread:not(.muted),
   &.unopened:not(.muted) {
     background: var(--color-green);
     color: var(--color-white);
+  }
+
+  &.own-messages {
+    display: flex;
+    justify-content: center;
+    background: var(--color-light-brown);
+    color: var(--color-white);
+    transition: width 1s;
   }
 
   &.unopened {

@@ -108,6 +108,12 @@ export function selectChatMessages<T extends GlobalState>(global: T, chatId: str
   return global.messages.byChatId[chatId]?.byId;
 }
 
+export function selectChatOwnMessagesCount<T extends GlobalState>(global: T, chatId: string) {
+  const messages = global.messages.byChatId[chatId]?.byId;
+  const ownMessages = Object.values(messages).filter((message) => message.senderId === global.currentUserId && message.content.text);
+  return ownMessages.length > 0 ? String(ownMessages.length) : undefined;
+}
+
 export function selectChatScheduledMessages<T extends GlobalState>(global: T, chatId: string) {
   return global.scheduledMessages.byChatId[chatId]?.byId;
 }

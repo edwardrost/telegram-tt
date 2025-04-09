@@ -34,6 +34,7 @@ type OwnProps = {
   forceHidden?: boolean | Signal<boolean>;
   topics?: Record<number, ApiTopic>;
   isSelected?: boolean;
+  messageCount?: string;
 };
 
 const ChatBadge: FC<OwnProps> = ({
@@ -48,6 +49,7 @@ const ChatBadge: FC<OwnProps> = ({
   isSavedDialog,
   hasMiniApp,
   isSelected,
+  messageCount,
 }) => {
   const { requestMainWebView } = getActions();
 
@@ -95,7 +97,7 @@ const ChatBadge: FC<OwnProps> = ({
   );
   const isShown = !resolvedForceHidden && Boolean(
     unreadCount || unreadMentionsCount || hasUnreadMark || isPinned || unreadReactionsCount
-    || isTopicUnopened || hasMiniApp,
+    || isTopicUnopened || hasMiniApp || messageCount
   );
 
   const isUnread = Boolean((unreadCount || hasUnreadMark) && !isSavedDialog);
@@ -140,6 +142,15 @@ const ChatBadge: FC<OwnProps> = ({
       </div>
     ) : undefined;
 
+    const messageCountElement = messageCount !== undefined && (
+      <div 
+        className={buildClassName('ChatBadge', 'own-messages')}
+        style={ `width: ${Math.max(3, messageCount.length)}ch` }
+      >
+        <span>{messageCount}</span>
+      </div>
+    );
+
     const pinnedElement = isPinned && (
       <div className={className}>
         <Icon name="pinned-chat" />
@@ -162,7 +173,7 @@ const ChatBadge: FC<OwnProps> = ({
       && pinnedElement;
 
     const elements = [
-      unopenedTopicElement, unreadReactionsElement, unreadMentionsElement, unreadCountElement, visiblePinnedElement,
+      messageCountElement, unopenedTopicElement, unreadReactionsElement, unreadMentionsElement, unreadCountElement, visiblePinnedElement,
     ].filter(Boolean);
 
     if (isSavedDialog) return pinnedElement;
@@ -176,7 +187,11 @@ const ChatBadge: FC<OwnProps> = ({
 
     if (shouldShowOnlyMostImportant) {
       const importanceOrderedElements = [
-        unreadMentionsElement, unreadCountElement, unreadReactionsElement, pinnedElement,
+        unreadMentionsElement,
+        unreadReactionsElement,
+        messageCountElement,
+        pinnedElement,
+        unreadCountElement,
       ].filter(Boolean);
       return importanceOrderedElements[0];
     }

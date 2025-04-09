@@ -1,4 +1,19 @@
-# Telegram Web A
+
+
+# РУС Тестовое задание:
+Добавить подсчет собственных сообщений в чатах типа группа и личный чат (каналы не нужно).
+Подсчет запускается когда объект чата попадает в область видимости.
+При начале подсчета выводим плашку с текстом: "Подсчет сообщений ...".
+При окончании - число сообщений. Плашка меняет свою ширину плавно.
+
+ENG Test task:
+Add counting of own messages in chats like group and private chat (channels not needed).
+Counting is started when a chat object is in the scope. 
+When counting starts, display a label with the text: “Counting messages ...”. 
+At the end - the number of messages. The bar changes its width smoothly.
+
+
+Telegram Web A
 
 This project won the first prize 🥇 at [Telegram Lightweight Client Contest](https://contest.com/javascript-web-3) and now is an official Telegram client available to anyone at [web.telegram.org/a](https://web.telegram.org/a).
 

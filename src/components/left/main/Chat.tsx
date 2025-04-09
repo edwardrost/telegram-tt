@@ -1,6 +1,6 @@
 import type { FC } from '../../../lib/teact/teact';
-import React, { memo, useEffect, useMemo } from '../../../lib/teact/teact';
-import { getActions, withGlobal } from '../../../global';
+import React, { memo, useEffect, useMemo, useState } from '../../../lib/teact/teact';
+import { getActions, withGlobal, getGlobal } from '../../../global';
 
 import type {
   ApiChat,
@@ -23,6 +23,7 @@ import {
   groupStatefulContent,
   isUserId,
   isUserOnline,
+  isChatChannel,
 } from '../../../global/helpers';
 import { getIsChatMuted } from '../../../global/helpers/notifications';
 import {
@@ -31,6 +32,7 @@ import {
   selectChatLastMessage,
   selectChatLastMessageId,
   selectChatMessage,
+  selectChatOwnMessagesCount,
   selectCurrentMessageList,
   selectDraft,
   selectIsForumPanelClosed,
@@ -88,7 +90,7 @@ type OwnProps = {
   previewMessageId?: number;
   className?: string;
   observeIntersection?: ObserveFn;
-  onDragEnter?: (chatId: string) => void;
+  onDragEnter?: (chatId: string) => void;  
 };
 
 type StateProps = {
@@ -286,10 +288,27 @@ const Chat: FC<OwnProps & StateProps> = ({
 
   const isIntersecting = useIsIntersecting(ref, chat ? observeIntersection : undefined);
 
+  // Add state for message count
+  const [messageCount, setMessageCount] = useState<string | undefined>(undefined);
+
   // Load the forum topics to display unread count badge
   useEffect(() => {
     if (isIntersecting && isForum && isSynced && listedTopicIds === undefined) {
-      loadTopics({ chatId });
+      loadTopics({ chatId });      
+    }
+
+    if (isIntersecting && chat && !isChatChannel(chat) && isSynced) {
+      setMessageCount("Подсчет сообщений ...");
+      
+      const timer = setTimeout(() => {
+        const globalState = getGlobal();
+        const count = selectChatOwnMessagesCount(globalState, chatId);
+        setMessageCount(count ? count.toString() : undefined);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    } else if (chat && isChatChannel(chat)) {
+      setMessageCount(undefined);
     }
   }, [chatId, listedTopicIds, isSynced, isForum, isIntersecting]);
 
@@ -308,7 +327,7 @@ const Chat: FC<OwnProps & StateProps> = ({
 
   if (!chat) {
     return undefined;
-  }
+  }  
 
   const peer = user || chat;
 
@@ -359,6 +378,7 @@ const Chat: FC<OwnProps & StateProps> = ({
             forceHidden={getIsForumPanelClosed}
             topics={topics}
             isSelected={isSelected}
+            messageCount={messageCount}
           />
         </div>
         {chat.isCallActive && chat.isCallNotEmpty && (
@@ -384,7 +404,7 @@ const Chat: FC<OwnProps & StateProps> = ({
             />
           )}
         </div>
-        <div className="subtitle">
+        <div className="subtitle">          
           {renderSubtitle()}
           {!isPreview && (
             <ChatBadge
@@ -395,6 +415,7 @@ const Chat: FC<OwnProps & StateProps> = ({
               hasMiniApp={user?.hasMainMiniApp}
               topics={topics}
               isSelected={isSelected}
+              messageCount={messageCount}
             />
           )}
         </div>
@@ -448,7 +469,7 @@ export default memo(withGlobal<OwnProps>(
     const savedDialogSender = isSavedDialog && forwardInfo?.fromId ? selectPeer(global, forwardInfo.fromId) : undefined;
     const messageSender = lastMessage ? selectSender(global, lastMessage) : undefined;
     const lastMessageSender = savedDialogSender || messageSender;
-
+   
     const {
       chatId: currentChatId,
       threadId: currentThreadId,
