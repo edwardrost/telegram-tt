@@ -294,9 +294,11 @@ const Chat: FC<OwnProps & StateProps> = ({
   // Load the forum topics to display unread count badge
   useEffect(() => {
     if (isIntersecting && isForum && isSynced && listedTopicIds === undefined) {
-      loadTopics({ chatId });      
+      loadTopics({ chatId });
     }
+  }, [chatId, listedTopicIds, isSynced, isForum, isIntersecting]);
 
+  useEffect(() => {
     if (isIntersecting && chat && !isChatChannel(chat) && isSynced) {
       setMessageCount("Подсчет сообщений ...");
       
@@ -307,10 +309,10 @@ const Chat: FC<OwnProps & StateProps> = ({
       }, 1000);
       
       return () => clearTimeout(timer);
-    } else if (chat && isChatChannel(chat)) {
-      setMessageCount(undefined);
-    }
-  }, [chatId, listedTopicIds, isSynced, isForum, isIntersecting]);
+      } else {
+        setMessageCount(undefined);
+      }
+    },  [chatId, isSynced, isIntersecting]);
 
   const isOnline = user && userStatus && isUserOnline(user, userStatus);
   const { hasShownClass: isAvatarOnlineShown } = useShowTransitionDeprecated(isOnline);

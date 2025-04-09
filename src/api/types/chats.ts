@@ -26,6 +26,7 @@ export interface ApiChat {
   unreadCount?: number;
   unreadMentionsCount?: number;
   unreadReactionsCount?: number;
+  ownMessageCount?: number;
   isVerified?: true;
   areSignaturesShown?: boolean;
   areProfilesShown?: boolean;

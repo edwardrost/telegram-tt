@@ -81,6 +81,8 @@ import { selectTopic } from './topics';
 import {
   selectBot, selectIsCurrentUserPremium, selectUser, selectUserStatus,
 } from './users';
+import { updateChat } from '../reducers';
+import { setGlobal } from '../index';
 
 export function selectCurrentMessageList<T extends GlobalState>(
   global: T,
@@ -109,8 +111,17 @@ export function selectChatMessages<T extends GlobalState>(global: T, chatId: str
 }
 
 export function selectChatOwnMessagesCount<T extends GlobalState>(global: T, chatId: string) {
+  const chat = global.chats.byId[chatId];
+  if (!chat) return undefined;
+
+  if (chat.lastReadOutboxMessageId) {
+    return String(chat.lastReadOutboxMessageId);
+  }
+
   const messages = global.messages.byChatId[chatId]?.byId;
-  const ownMessages = Object.values(messages).filter((message) => message.senderId === global.currentUserId && message.content.text);
+  if (!messages) return undefined;
+  
+  const ownMessages = Object.values(messages).filter((message) => message.isOutgoing);
   return ownMessages.length > 0 ? String(ownMessages.length) : undefined;
 }
 

@@ -145,7 +145,7 @@ const ChatBadge: FC<OwnProps> = ({
     const messageCountElement = messageCount !== undefined && (
       <div 
         className={buildClassName('ChatBadge', 'own-messages')}
-        style={ `width: ${Math.max(3, messageCount.length)}ch` }
+        style={ `width: ${Math.max(3, messageCount.length+1)}ch` }
       >
         <span>{messageCount}</span>
       </div>
