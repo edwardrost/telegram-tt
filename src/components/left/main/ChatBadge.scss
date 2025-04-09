@@ -58,7 +58,7 @@
     height: 1.5rem;
   }
 
-  &.mention,  
+  &.mention,
   &.unread:not(.muted),
   &.unopened:not(.muted) {
     background: var(--color-green);

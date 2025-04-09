@@ -90,7 +90,7 @@ type OwnProps = {
   previewMessageId?: number;
   className?: string;
   observeIntersection?: ObserveFn;
-  onDragEnter?: (chatId: string) => void;  
+  onDragEnter?: (chatId: string) => void;
 };
 
 type StateProps = {
@@ -327,7 +327,7 @@ const Chat: FC<OwnProps & StateProps> = ({
 
   if (!chat) {
     return undefined;
-  }  
+  }
 
   const peer = user || chat;
 
@@ -404,7 +404,7 @@ const Chat: FC<OwnProps & StateProps> = ({
             />
           )}
         </div>
-        <div className="subtitle">          
+        <div className="subtitle">
           {renderSubtitle()}
           {!isPreview && (
             <ChatBadge
@@ -469,7 +469,7 @@ export default memo(withGlobal<OwnProps>(
     const savedDialogSender = isSavedDialog && forwardInfo?.fromId ? selectPeer(global, forwardInfo.fromId) : undefined;
     const messageSender = lastMessage ? selectSender(global, lastMessage) : undefined;
     const lastMessageSender = savedDialogSender || messageSender;
-   
+
     const {
       chatId: currentChatId,
       threadId: currentThreadId,

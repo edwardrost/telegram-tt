@@ -1,5 +1,3 @@
-
-
 # РУС Тестовое задание:
 Добавить подсчет собственных сообщений в чатах типа группа и личный чат (каналы не нужно).
 Подсчет запускается когда объект чата попадает в область видимости.
@@ -12,6 +10,7 @@ Counting is started when a chat object is in the scope.
 When counting starts, display a label with the text: “Counting messages ...”. 
 At the end - the number of messages. The bar changes its width smoothly.
 
+---
 
 Telegram Web A
 
